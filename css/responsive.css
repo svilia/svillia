@@ -1,0 +1,370 @@
+/* ======================================================
+   SVILIA GAMES STUDIO
+   RESPONSIVE.CSS
+====================================================== */
+
+/* 1600px */
+
+@media (max-width:1600px){
+
+.container{
+
+max-width:1350px;
+
+}
+
+.hero h1{
+
+font-size:90px;
+
+}
+
+.section-title h2{
+
+font-size:56px;
+
+}
+
+}
+
+/* 1400px */
+
+@media (max-width:1400px){
+
+.games-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.footer-grid{
+
+grid-template-columns:repeat(2,1fr);
+
+gap:50px;
+
+}
+
+.gallery-grid{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+.timeline{
+
+grid-template-columns:repeat(3,1fr);
+
+}
+
+.stats-grid{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+}
+
+/* 1200px */
+
+@media (max-width:1200px){
+
+.hero h1{
+
+font-size:72px;
+
+letter-spacing:10px;
+
+}
+
+.hero h2{
+
+font-size:24px;
+
+}
+
+.about-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.features-grid{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+nav ul{
+
+gap:28px;
+
+}
+
+}
+
+/* 992px */
+
+@media (max-width:992px){
+
+header{
+
+height:75px;
+
+}
+
+.logo img{
+
+height:40px;
+
+}
+
+.hero{
+
+padding:0 25px;
+
+}
+
+.hero h1{
+
+font-size:56px;
+
+letter-spacing:6px;
+
+}
+
+.hero h2{
+
+font-size:22px;
+
+}
+
+.hero p{
+
+font-size:18px;
+
+}
+
+.gallery-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.features-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.news-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.timeline{
+
+grid-template-columns:1fr;
+
+}
+
+.stats-grid{
+
+grid-template-columns:1fr;
+
+}
+
+.footer-grid{
+
+grid-template-columns:1fr;
+
+}
+
+nav ul{
+
+display:none;
+
+}
+
+.mobile-button{
+
+display:flex;
+
+}
+
+}
+
+/* 768px */
+
+@media (max-width:768px){
+
+section{
+
+padding:90px 0;
+
+}
+
+.hero h1{
+
+font-size:46px;
+
+}
+
+.hero h2{
+
+font-size:18px;
+
+}
+
+.hero p{
+
+font-size:16px;
+
+}
+
+.section-title h2{
+
+font-size:42px;
+
+}
+
+.about h2{
+
+font-size:40px;
+
+}
+
+.game-info h3{
+
+font-size:30px;
+
+}
+
+.contact h2{
+
+font-size:42px;
+
+}
+
+.button{
+
+padding:15px 30px;
+
+}
+
+}
+
+/* 576px */
+
+@media (max-width:576px){
+
+.container{
+
+width:92%;
+
+}
+
+.hero h1{
+
+font-size:38px;
+
+letter-spacing:4px;
+
+}
+
+.hero h2{
+
+font-size:17px;
+
+}
+
+.hero p{
+
+font-size:15px;
+
+}
+
+.logo span{
+
+display:none;
+
+}
+
+.game-info{
+
+padding:25px;
+
+}
+
+.feature{
+
+padding:30px;
+
+}
+
+.news-card{
+
+padding:28px;
+
+}
+
+.timeline div{
+
+padding:25px;
+
+}
+
+.stat{
+
+padding:30px;
+
+}
+
+.footer-grid{
+
+gap:30px;
+
+}
+
+}
+
+/* 400px */
+
+@media (max-width:400px){
+
+.hero h1{
+
+font-size:30px;
+
+letter-spacing:2px;
+
+}
+
+.hero h2{
+
+font-size:15px;
+
+}
+
+.hero p{
+
+font-size:14px;
+
+}
+
+.button{
+
+width:100%;
+
+}
+
+.contact a{
+
+font-size:18px;
+
+word-break:break-all;
+
+}
+
+}
