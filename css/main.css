@@ -1,0 +1,450 @@
+/* ======================================================
+   SVILIA GAMES STUDIO
+   MAIN.CSS
+====================================================== */
+
+/* RESET */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    background:var(--black);
+
+    color:var(--white);
+
+    font-family:var(--font);
+
+    overflow-x:hidden;
+
+    line-height:1.7;
+
+    -webkit-font-smoothing:antialiased;
+
+}
+
+img{
+
+    display:block;
+
+    max-width:100%;
+
+    user-select:none;
+
+}
+
+a{
+
+    color:inherit;
+
+    text-decoration:none;
+
+}
+
+button{
+
+    border:none;
+
+    background:none;
+
+    font-family:inherit;
+
+    cursor:pointer;
+
+}
+
+.container{
+
+    width:90%;
+
+    max-width:1450px;
+
+    margin:auto;
+
+}
+
+/* ===========================
+SCROLLBAR
+=========================== */
+
+::-webkit-scrollbar{
+
+width:8px;
+
+}
+
+::-webkit-scrollbar-track{
+
+background:#050505;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+background:#4d4d4d;
+
+}
+
+::-webkit-scrollbar-thumb:hover{
+
+background:white;
+
+}
+
+/* ===========================
+LOADER
+=========================== */
+
+#loader{
+
+position:fixed;
+
+inset:0;
+
+background:black;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+z-index:999999;
+
+transition:.8s;
+
+}
+
+.loader-logo img{
+
+width:80px;
+
+}
+
+.loader-logo{
+
+animation:loaderPulse 2s infinite;
+
+}
+
+/* ===========================
+HEADER
+=========================== */
+
+header{
+
+position:fixed;
+
+top:0;
+
+left:0;
+
+width:100%;
+
+height:90px;
+
+display:flex;
+
+align-items:center;
+
+z-index:9999;
+
+transition:.4s;
+
+backdrop-filter:blur(18px);
+
+background:rgba(0,0,0,.35);
+
+border-bottom:1px solid rgba(255,255,255,.05);
+
+}
+
+header.scrolled{
+
+height:72px;
+
+background:rgba(0,0,0,.82);
+
+}
+
+nav{
+
+width:90%;
+
+max-width:1450px;
+
+margin:auto;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+}
+
+.logo{
+
+display:flex;
+
+align-items:center;
+
+gap:16px;
+
+}
+
+.logo img{
+
+height:46px;
+
+transition:.4s;
+
+}
+
+.logo span{
+
+font-size:20px;
+
+font-weight:700;
+
+letter-spacing:2px;
+
+}
+
+/* ===========================
+MENU
+=========================== */
+
+nav ul{
+
+display:flex;
+
+gap:48px;
+
+list-style:none;
+
+}
+
+nav ul li{
+
+position:relative;
+
+}
+
+nav ul li a{
+
+font-size:15px;
+
+font-weight:500;
+
+transition:.35s;
+
+letter-spacing:.5px;
+
+}
+
+nav ul li a:hover{
+
+opacity:.65;
+
+}
+
+nav ul li::after{
+
+content:"";
+
+position:absolute;
+
+left:0;
+
+bottom:-8px;
+
+width:0;
+
+height:2px;
+
+background:white;
+
+transition:.35s;
+
+}
+
+nav ul li:hover::after{
+
+width:100%;
+
+}
+
+/* ===========================
+BUTTONS
+=========================== */
+
+.button{
+
+display:inline-flex;
+
+justify-content:center;
+
+align-items:center;
+
+padding:18px 44px;
+
+border:1px solid white;
+
+transition:.35s;
+
+font-size:15px;
+
+letter-spacing:1px;
+
+}
+
+.button:hover{
+
+background:white;
+
+color:black;
+
+}
+
+/* ===========================
+HERO
+=========================== */
+
+.hero{
+
+height:100vh;
+
+position:relative;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+text-align:center;
+
+overflow:hidden;
+
+}
+
+.hero::before{
+
+content:"";
+
+position:absolute;
+
+inset:0;
+
+background:
+
+linear-gradient(rgba(0,0,0,.45),
+
+rgba(0,0,0,.82)),
+
+url("../assets/hero.webp");
+
+background-size:cover;
+
+background-position:center;
+
+transform:scale(1.05);
+
+}
+
+.hero-content{
+
+position:relative;
+
+z-index:10;
+
+max-width:900px;
+
+}
+
+.hero h1{
+
+font-size:110px;
+
+font-weight:800;
+
+letter-spacing:14px;
+
+}
+
+.hero h2{
+
+margin-top:20px;
+
+font-size:30px;
+
+font-weight:300;
+
+letter-spacing:6px;
+
+color:#d0d0d0;
+
+}
+
+.hero p{
+
+margin-top:35px;
+
+font-size:20px;
+
+color:#bdbdbd;
+
+}
+
+.hero .button{
+
+margin-top:55px;
+
+}
+
+/* ===========================
+SECTION
+=========================== */
+
+section{
+
+padding:130px 0;
+
+}
+
+.section-title{
+
+margin-bottom:80px;
+
+}
+
+.section-title p{
+
+color:#808080;
+
+text-transform:uppercase;
+
+letter-spacing:3px;
+
+font-size:14px;
+
+margin-bottom:15px;
+
+}
+
+.section-title h2{
+
+font-size:62px;
+
+font-weight:800;
+
+}
