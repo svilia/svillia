@@ -1116,3 +1116,78 @@ height:50px;
 font-size:30px;
 
 }
+/* ==========================================
+   CUSTOM CURSOR
+========================================== */
+
+body{
+
+cursor:none;
+
+}
+
+.cursor{
+
+position:fixed;
+
+width:32px;
+
+height:32px;
+
+border:2px solid white;
+
+border-radius:50%;
+
+pointer-events:none;
+
+transform:translate(-50%,-50%);
+
+transition:
+
+width .25s,
+
+height .25s,
+
+background .25s,
+
+opacity .25s;
+
+z-index:999999;
+
+}
+
+.cursor-dot{
+
+position:fixed;
+
+width:6px;
+
+height:6px;
+
+background:white;
+
+border-radius:50%;
+
+pointer-events:none;
+
+transform:translate(-50%,-50%);
+
+z-index:1000000;
+
+}
+
+.cursor-hover{
+
+width:60px;
+
+height:60px;
+
+background:rgba(255,255,255,.12);
+
+}
+
+.cursor-click{
+
+transform:translate(-50%,-50%) scale(.8);
+
+}
