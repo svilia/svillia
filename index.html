@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Svillia OS — A New Beginning</title>
+<meta name="description" content="Svillia OS is a closed-source desktop operating system developed completely from scratch — its own kernel, bootloader, file system, programming language and desktop environment.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="Svillia OS">
+<meta property="og:description" content="A New Beginning. Built from scratch. Built for the future.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://svilia.github.io/SvilliaOS/">
+<meta property="og:image" content="https://svilia.github.io/SvilliaOS/assets/preview.png">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Svillia OS">
+<meta name="twitter:description" content="A New Beginning. Built from scratch. Built for the future.">
+<meta name="twitter:image" content="https://svilia.github.io/SvilliaOS/assets/preview.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Cpath%20d%3D%22M%2029.84%2C4.48%20L%204.00%2C31.77%20L%204.72%2C35.15%20L%2025.97%2C58.33%20L%2025.73%2C67.02%20L%204.00%2C91.65%20L%2070.40%2C92.62%20L%2094.79%2C67.99%20L%2096.00%2C64.13%20L%2075.23%2C39.98%20L%2063.64%2C38.53%20L%2095.52%2C4.72%20Z%22%20fill%3D%22%23111111%22/%3E%3C/svg%3E">
+
+<style>
+  /* ============================================================
+     0. RESET & BASE
+  ============================================================ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root{
+    --white:        #ffffff;
+    --surface:      #f6f6f4;
+    --surface-2:    #f0f0ee;
+    --ink:          #111111;
+    --ink-soft:     #4a4a4d;
+    --ink-faint:    #83838a;
+    --border:       #e4e4e0;
+    --border-strong:#d3d3cd;
+    --black:        #000000;
+    --black-surface:#141414;
+    --black-border: #2a2a2a;
+
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Segoe UI Mono", Menlo, Consolas, monospace;
+
+    --container: 1200px;
+    --pad-inline: clamp(20px, 6vw, 64px);
+    --section-pad: clamp(88px, 11vw, 160px);
+
+    --radius-lg: 24px;
+    --radius-md: 16px;
+    --radius-full: 999px;
+
+    --ease: cubic-bezier(.22,.61,.36,1);
+    --nav-h: 76px;
+  }
+
+  html{
+    scroll-behavior: smooth;
+    scroll-padding-top: var(--nav-h);
+  }
+
+  body{
+    font-family: var(--font-sans);
+    color: var(--ink);
+    background: var(--white);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.5;
+    font-size: 17px;
+  }
+
+  img, svg { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  ul { list-style: none; }
+  button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+
+  a:focus-visible,
+  button:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .container{
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--pad-inline);
+  }
+
+  .skip-link{
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    background: var(--ink);
+    color: var(--white);
+    padding: 12px 20px;
+    border-radius: 0 0 10px 0;
+    z-index: 1000;
+  }
+  .skip-link:focus{ left: 0; }
+
+  section{ padding-block: var(--section-pad); }
+
+  .section-header{
+    max-width: 640px;
+    margin-bottom: clamp(48px, 6vw, 80px);
+  }
+  .section-header.center{ margin-inline: auto; text-align: center; }
+
+  .eyebrow{
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 18px;
+  }
+  .eyebrow::before{
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ink);
+    flex-shrink: 0;
+  }
+
+  h1, h2, h3 { font-weight: 600; letter-spacing: -0.02em; line-height: 1.08; }
+
+  h2.section-title{
+    font-size: clamp(30px, 3.6vw, 44px);
+    margin-bottom: 16px;
+  }
+  .section-header p{
+    color: var(--ink-soft);
+    font-size: clamp(16px, 1.4vw, 18px);
+    line-height: 1.6;
+  }
+
+  .btn{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px 32px;
+    border-radius: var(--radius-full);
+    font-size: 15.5px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    border: 1px solid transparent;
+    transition: transform .35s var(--ease), background-color .35s var(--ease), border-color .35s var(--ease), box-shadow .35s var(--ease);
+    white-space: nowrap;
+  }
+  .btn-primary{
+    background: var(--ink);
+    color: var(--white);
+  }
+  .btn-primary:hover{
+    background: #2b2b2b;
+    transform: translateY(-2px);
+    box-shadow: 0 18px 30px -14px rgba(0,0,0,0.35);
+  }
+  .btn-primary:active{ transform: translateY(0); }
+
+  .btn-outline{
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--border-strong);
+  }
+  .btn-outline:hover{
+    border-color: var(--ink);
+    transform: translateY(-2px);
+  }
+
+  /* ============================================================
+     1. REVEAL ANIMATION
+  ============================================================ */
+  [data-reveal]{
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity .8s var(--ease), transform .8s var(--ease);
+    transition-delay: var(--reveal-delay, 0s);
+  }
+  [data-reveal].is-visible{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+    [data-reveal]{ opacity: 1; transform: none; }
+  }
+
+  /* ============================================================
+     2. LOGO
+  ============================================================ */
+  .logo-icon{ width: 30px; height: 30px; flex-shrink: 0; }
+  .brand{
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .brand span{ line-height: 1; }
+
+  /* ============================================================
+     3. NAVIGATION
+  ============================================================ */
+  .site-nav{
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--nav-h);
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.92);
+    border-bottom: 1px solid transparent;
+    z-index: 500;
+    transition: border-color .4s var(--ease), box-shadow .4s var(--ease);
+  }
+  .site-nav.is-scrolled{
+    border-bottom-color: var(--border);
+  }
+  .nav-inner{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-links{
+    display: flex;
+    align-items: center;
+    gap: clamp(20px, 2.4vw, 40px);
+  }
+  .nav-links a:not(.nav-github){
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    position: relative;
+    padding-block: 6px;
+    transition: color .3s var(--ease);
+  }
+  .nav-links a:not(.nav-github):hover,
+  .nav-links a.is-active{
+    color: var(--ink);
+  }
+  .nav-links a:not(.nav-github)::after{
+    content: "";
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .35s var(--ease);
+  }
+  .nav-links a:not(.nav-github):hover::after,
+  .nav-links a.is-active::after{
+    transform: scaleX(1);
+  }
+
+  .nav-github{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 9px 18px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-strong);
+    transition: border-color .3s var(--ease), background-color .3s var(--ease), transform .3s var(--ease);
+  }
+  .nav-github:hover{
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--white);
+    transform: translateY(-1px);
+  }
+  .nav-github svg{ width: 16px; height: 16px; }
+
+  .nav-toggle{
+    display: none;
+    width: 40px; height: 40px;
+    align-items: center;
+    justify-content: center;
+  }
+  .nav-toggle svg{ width: 22px; height: 22px; }
+
+  /* Mobile nav */
+  .mobile-panel{
+    position: fixed;
+    inset: var(--nav-h) 0 0 0;
+    background: var(--white);
+    z-index: 490;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px var(--pad-inline);
+    transform: translateY(-12px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .35s var(--ease), transform .35s var(--ease), visibility 0s linear .35s;
+  }
+  .mobile-panel.is-open{
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity .35s var(--ease), transform .35s var(--ease), visibility 0s linear 0s;
+  }
+  .mobile-panel a{
+    display: block;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    padding-block: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .mobile-panel a.nav-github{
+    display: inline-flex;
+    margin-top: 24px;
+    border-bottom: none;
+    width: fit-content;
+    font-size: 15px;
+  }
+
+  /* ============================================================
+     4. HERO
+  ============================================================ */
+  .hero{
+    padding-top: calc(var(--nav-h) + clamp(64px, 9vw, 120px));
+    padding-bottom: clamp(80px, 10vw, 140px);
+    text-align: center;
+  }
+  .hero-inner{
+    max-width: 840px;
+    margin-inline: auto;
+  }
+  .hero .eyebrow{ justify-content: center; }
+
+  .hero h1{
+    font-size: clamp(46px, 8vw, 92px);
+    line-height: 1.02;
+  }
+  .hero h1 .line-2{
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    font-weight: 400;
+    color: var(--ink-soft);
+  }
+  .cursor{
+    display: inline-block;
+    width: 0.46em;
+    height: 0.72em;
+    background: var(--ink);
+    animation: blink 1.1s step-end infinite;
+    transform: translateY(0.06em);
+  }
+  @keyframes blink{
+    0%, 45% { opacity: 1; }
+    46%, 100% { opacity: 0; }
+  }
+
+  .hero-subtitle{
+    margin-top: 30px;
+    font-size: clamp(18px, 2vw, 22px);
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .hero-subtitle span{ display: block; color: var(--ink-faint); font-weight: 400; }
+
+  .hero-description{
+    margin-top: 26px;
+    font-size: clamp(16px, 1.4vw, 18px);
+    color: var(--ink-soft);
+    line-height: 1.7;
+    max-width: 620px;
+    margin-inline: auto;
+  }
+
+  .hero-actions{
+    margin-top: 44px;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* ============================================================
+     5. ARCHITECTURE
+  ============================================================ */
+  .architecture{ background: var(--surface); }
+
+  .arch-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .arch-card{
+    background: var(--white);
+    padding: 40px 32px;
+    transition: background-color .35s var(--ease);
+  }
+  .arch-card:hover{ background: var(--surface); }
+  .arch-index{
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink-faint);
+    margin-bottom: 28px;
+  }
+  .arch-name{
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+  }
+  .arch-desc{
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+
+  /* ============================================================
+     6. TECHNOLOGY / FEATURES
+  ============================================================ */
+  .tech-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .tech-card{
+    background: var(--white);
+    padding: 36px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: background-color .35s var(--ease), transform .35s var(--ease);
+  }
+  .tech-card:hover{ background: var(--surface); }
+  .tech-icon{
+    width: 26px; height: 26px;
+    color: var(--ink);
+  }
+  .tech-icon svg{ width: 100%; height: 100%; }
+  .tech-label{
+    font-size: 15.5px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  /* ============================================================
+     7. ROADMAP
+  ============================================================ */
+  .roadmap-track{
+    position: relative;
+    max-width: 760px;
+  }
+  .roadmap-track::before{
+    content: "";
+    position: absolute;
+    left: 9px;
+    top: 10px;
+    bottom: 10px;
+    width: 1px;
+    background: var(--border-strong);
+  }
+  .roadmap-item{
+    position: relative;
+    padding-left: 48px;
+    margin-bottom: 56px;
+  }
+  .roadmap-item:last-child{ margin-bottom: 0; }
+  .roadmap-dot{
+    position: absolute;
+    left: 0; top: 6px;
+    width: 19px; height: 19px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 1px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .roadmap-dot::after{
+    content: "";
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--ink);
+  }
+  .roadmap-phase{
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+  }
+  .roadmap-title{
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+  .roadmap-list{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px 24px;
+  }
+  .roadmap-list li{
+    font-size: 15.5px;
+    color: var(--ink-soft);
+    padding-left: 18px;
+    position: relative;
+  }
+  .roadmap-list li::before{
+    content: "";
+    position: absolute;
+    left: 0; top: 10px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--ink-faint);
+  }
+
+  /* ============================================================
+     8. ABOUT
+  ============================================================ */
+  .about-grid{
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: clamp(40px, 6vw, 100px);
+    align-items: start;
+  }
+  .about-head{ position: sticky; top: calc(var(--nav-h) + 40px); }
+  .about-head h2{ font-size: clamp(28px, 3vw, 36px); }
+  .about-copy p{
+    font-size: clamp(17px, 1.6vw, 20px);
+    line-height: 1.75;
+    color: var(--ink-soft);
+    margin-bottom: 26px;
+  }
+  .about-copy p:first-child{
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .about-copy p:last-child{ margin-bottom: 0; }
+  .about-copy strong{ font-weight: 600; color: var(--ink); }
+
+  /* ============================================================
+     9. FOOTER
+  ============================================================ */
+  .site-footer{
+    background: var(--black);
+    color: #ffffff;
+    padding-block: clamp(64px, 8vw, 100px) 32px;
+  }
+  .footer-top{
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 48px;
+    padding-bottom: 64px;
+    border-bottom: 1px solid var(--black-border);
+  }
+  .footer-brand .brand{ color: #ffffff; }
+  .footer-brand p{
+    margin-top: 18px;
+    font-size: 14.5px;
+    color: #8a8a8a;
+    max-width: 260px;
+    line-height: 1.6;
+  }
+  .footer-col h4{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7a7a7a;
+    font-weight: 500;
+    margin-bottom: 18px;
+  }
+  .footer-col a, .footer-col p{
+    font-size: 15px;
+    color: #e4e4e4;
+  }
+  .footer-col a{
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: color .3s var(--ease);
+  }
+  .footer-col a:hover{ color: #ffffff; }
+  .footer-col svg{ width: 14px; height: 14px; opacity: 0.7; }
+
+  .footer-bottom{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 28px;
+    font-size: 13.5px;
+    color: #767676;
+  }
+  .footer-bottom .logo-icon{ width: 18px; height: 18px; }
+  .footer-bottom-brand{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ============================================================
+     10. RESPONSIVE
+  ============================================================ */
+  @media (max-width: 900px){
+    .nav-links{ display: none; }
+    .nav-toggle{ display: flex; }
+
+    .about-grid{ grid-template-columns: 1fr; }
+    .about-head{ position: static; }
+
+    .footer-top{ grid-template-columns: 1fr 1fr; row-gap: 40px; }
+    .footer-brand{ grid-column: 1 / -1; }
+  }
+
+  @media (max-width: 560px){
+    section{ padding-block: clamp(64px, 14vw, 96px); }
+    .hero{ padding-bottom: 72px; }
+    .hero-actions{ width: 100%; }
+    .btn-primary{ width: 100%; }
+    .footer-top{ grid-template-columns: 1fr; }
+    .roadmap-list{ grid-template-columns: 1fr; }
+    .about-grid{ gap: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+<noscript><style>[data-reveal]{ opacity: 1 !important; transform: none !important; }</style></noscript>
+
+<!-- ============================================================
+     LOGO SPRITE (embedded SVG, referenced via <use>)
+============================================================ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="logo-mark" viewBox="0 0 100 100">
+    <path d="M 29.84,4.48 L 4.00,31.77 L 4.72,35.15 L 25.97,58.33 L 25.73,67.02 L 4.00,91.65 L 70.40,92.62 L 94.79,67.99 L 96.00,64.13 L 75.23,39.98 L 63.64,38.53 L 95.52,4.72 Z" fill="#ffffff" stroke="#111111" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M 71.61,30.56 L 23.08,31.04 L 22.35,32.01 L 23.08,34.18 L 43.36,56.88 L 42.64,58.33 L 26.22,58.33 L 25.25,57.61 L 26.22,58.57 L 25.73,66.78 L 74.27,66.30 L 74.99,65.33 L 74.51,63.40 L 69.92,58.57 L 54.71,58.09 L 39.01,40.22 L 39.74,38.77 L 64.13,38.77 L 63.40,38.53 Z" fill="#111111"/>
+  </symbol>
+  <symbol id="logo-mark-dark" viewBox="0 0 100 100">
+    <path d="M 29.84,4.48 L 4.00,31.77 L 4.72,35.15 L 25.97,58.33 L 25.73,67.02 L 4.00,91.65 L 70.40,92.62 L 94.79,67.99 L 96.00,64.13 L 75.23,39.98 L 63.64,38.53 L 95.52,4.72 Z" fill="#000000" stroke="#ffffff" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M 71.61,30.56 L 23.08,31.04 L 22.35,32.01 L 23.08,34.18 L 43.36,56.88 L 42.64,58.33 L 26.22,58.33 L 25.25,57.61 L 26.22,58.57 L 25.73,66.78 L 74.27,66.30 L 74.99,65.33 L 74.51,63.40 L 69.92,58.57 L 54.71,58.09 L 39.01,40.22 L 39.74,38.77 L 64.13,38.77 L 63.40,38.53 Z" fill="#ffffff"/>
+  </symbol>
+</svg>
+
+<!-- ============================================================
+     NAVIGATION
+============================================================ -->
+<header class="site-nav" id="siteNav">
+  <div class="container nav-inner">
+    <a href="#home" class="brand">
+      <svg class="logo-icon" aria-hidden="true"><use href="#logo-mark"></use></svg>
+      <span>Svillia OS</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#home">Home</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#technology">Technology</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#about">About</a>
+      <a class="nav-github" href="https://github.com/svilia" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0.5C5.65 0.5 0.5 5.72 0.5 12.16c0 5.15 3.29 9.51 7.86 11.05 0.57 0.11 0.78-0.25 0.78-0.56 0-0.28-0.01-1.02-0.02-2-3.2 0.7-3.87-1.57-3.87-1.57-0.52-1.34-1.28-1.7-1.28-1.7-1.05-0.72 0.08-0.71 0.08-0.71 1.16 0.08 1.77 1.2 1.77 1.2 1.03 1.79 2.7 1.27 3.36 0.97 0.1-0.76 0.4-1.27 0.73-1.56-2.56-0.29-5.25-1.29-5.25-5.72 0-1.26 0.44-2.29 1.17-3.1-0.12-0.29-0.51-1.46 0.11-3.04 0 0 0.96-0.31 3.13 1.18 0.91-0.25 1.88-0.38 2.85-0.39 0.97 0 1.94 0.13 2.85 0.39 2.17-1.49 3.12-1.18 3.12-1.18 0.62 1.58 0.23 2.75 0.11 3.04 0.73 0.81 1.17 1.84 1.17 3.1 0 4.44-2.69 5.42-5.26 5.71 0.41 0.36 0.78 1.08 0.78 2.17 0 1.57-0.01 2.83-0.01 3.21 0 0.31 0.21 0.68 0.79 0.56C20.71 21.66 24 17.31 24 12.16 24 5.72 18.85 0.5 12.5 0.5H12z"/></svg>
+        GitHub
+      </a>
+    </nav>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobilePanel">
+      <svg id="navToggleIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <path d="M3 6h18M3 12h18M3 18h18"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-panel" id="mobilePanel">
+  <a href="#home">Home</a>
+  <a href="#architecture">Architecture</a>
+  <a href="#technology">Technology</a>
+  <a href="#roadmap">Roadmap</a>
+  <a href="#about">About</a>
+  <a class="nav-github" href="https://github.com/svilia" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0.5C5.65 0.5 0.5 5.72 0.5 12.16c0 5.15 3.29 9.51 7.86 11.05 0.57 0.11 0.78-0.25 0.78-0.56 0-0.28-0.01-1.02-0.02-2-3.2 0.7-3.87-1.57-3.87-1.57-0.52-1.34-1.28-1.7-1.28-1.7-1.05-0.72 0.08-0.71 0.08-0.71 1.16 0.08 1.77 1.2 1.77 1.2 1.03 1.79 2.7 1.27 3.36 0.97 0.1-0.76 0.4-1.27 0.73-1.56-2.56-0.29-5.25-1.29-5.25-5.72 0-1.26 0.44-2.29 1.17-3.1-0.12-0.29-0.51-1.46 0.11-3.04 0 0 0.96-0.31 3.13 1.18 0.91-0.25 1.88-0.38 2.85-0.39 0.97 0 1.94 0.13 2.85 0.39 2.17-1.49 3.12-1.18 3.12-1.18 0.62 1.58 0.23 2.75 0.11 3.04 0.73 0.81 1.17 1.84 1.17 3.1 0 4.44-2.69 5.42-5.26 5.71 0.41 0.36 0.78 1.08 0.78 2.17 0 1.57-0.01 2.83-0.01 3.21 0 0.31 0.21 0.68 0.79 0.56C20.71 21.66 24 17.31 24 12.16 24 5.72 18.85 0.5 12.5 0.5H12z"/></svg>
+    GitHub
+  </a>
+</div>
+
+<main id="main">
+
+  <!-- ============================================================
+       HERO
+  ============================================================ -->
+  <section class="hero" id="home">
+    <div class="container hero-inner">
+      <p class="eyebrow" data-reveal>SVILLIA OS · DESKTOP OPERATING SYSTEM</p>
+
+      <h1 data-reveal>
+        Svillia OS<br>
+        <span class="line-2">A New Beginning<span class="cursor" aria-hidden="true"></span></span>
+      </h1>
+
+      <p class="hero-subtitle" data-reveal style="--reveal-delay:.05s">
+        Built from scratch.
+        <span>Built for the future.</span>
+      </p>
+
+      <p class="hero-description" data-reveal style="--reveal-delay:.1s">
+        Svillia OS is a closed-source desktop operating system developed completely from scratch. The project aims to build an independent software ecosystem with its own kernel, bootloader, file system, programming language and desktop environment.
+      </p>
+
+      <div class="hero-actions" data-reveal style="--reveal-delay:.15s">
+        <a href="#architecture" class="btn btn-primary">View Architecture</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ARCHITECTURE
+  ============================================================ -->
+  <section class="architecture" id="architecture">
+    <div class="container">
+      <div class="section-header" data-reveal>
+        <p class="eyebrow">Architecture</p>
+        <h2 class="section-title">Every layer, built from zero.</h2>
+        <p>Eight independent components form the foundation of Svillia OS — no forks, no borrowed code, no inherited constraints.</p>
+      </div>
+
+      <div class="arch-grid">
+        <div class="arch-card" data-reveal>
+          <p class="arch-index">01</p>
+          <p class="arch-name">SBoot</p>
+          <p class="arch-desc">Custom bootloader</p>
+        </div>
+        <div class="arch-card" data-reveal>
+          <p class="arch-index">02</p>
+          <p class="arch-name">SVKernel</p>
+          <p class="arch-desc">Custom kernel</p>
+        </div>
+        <div class="arch-card" data-reveal>
+          <p class="arch-index">03</p>
+          <p class="arch-name">SVFS</p>
+          <p class="arch-desc">Custom filesystem</p>
+        </div>
+        <div class="arch-card" data-reveal>
+          <p class="arch-index">04</p>
+          <p class="arch-name">SVShell</p>
+          <p class="arch-desc">Terminal</p>
+        </div>
+        <div class="arch-card" data-reveal>
+          <p class="arch-index">05</p>
+          <p class="arch-name">Nova Desktop</p>
+          <p class="arch-desc">Desktop environment</p>
+        </div>
+        <div class="arch-card" data-reveal>
+          <p class="arch-index">06</p>
+          <p class="arch-name">SVPM</p>
+          <p class="arch-desc">Package manager</p>
+        </div>
+        <div class="arch-card" data-reveal>
+          <p class="arch-index">07</p>
+          <p class="arch-name">SVX</p>
+          <p class="arch-desc">Executable format</p>
+        </div>
+        <div class="arch-card" data-reveal>
+          <p class="arch-index">08</p>
+          <p class="arch-name">Svilia#</p>
+          <p class="arch-desc">Programming language</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       TECHNOLOGY / FEATURES
+  ============================================================ -->
+  <section class="technology" id="technology">
+    <div class="container">
+      <div class="section-header" data-reveal>
+        <p class="eyebrow">Technology</p>
+        <h2 class="section-title">Engineered, not assembled.</h2>
+        <p>A closed, independent foundation designed for performance, security and long-term commercial growth.</p>
+      </div>
+
+      <div class="tech-grid">
+        <div class="tech-card" data-reveal>
+          <span class="tech-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="10" height="10" rx="2"/>
+              <rect x="11" y="11" width="10" height="10" rx="2"/>
+            </svg>
+          </span>
+          <span class="tech-label">Completely original architecture</span>
+        </div>
+
+        <div class="tech-card" data-reveal>
+          <span class="tech-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v8"/>
+              <path d="M6.2 6.2a8 8 0 1 0 11.6 0"/>
+            </svg>
+          </span>
+          <span class="tech-label">Custom Bootloader</span>
+        </div>
+
+        <div class="tech-card" data-reveal>
+          <span class="tech-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2 21 7v10l-9 5-9-5V7z"/>
+              <circle cx="12" cy="12" r="2.2"/>
+            </svg>
+          </span>
+          <span class="tech-label">Custom Kernel</span>
+        </div>
+
+        <div class="tech-card" data-reveal>
+          <span class="tech-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            </svg>
+          </span>
+          <span class="tech-label">Custom Filesystem</span>
+        </div>
+
+        <div class="tech-card" data-reveal>
+          <span class="tech-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 6 3 12l6 6"/>
+              <path d="M15 6l6 6-6 6"/>
+            </svg>
+          </span>
+          <span class="tech-label">Custom Programming Language</span>
+        </div>
+
+        <div class="tech-card" data-reveal>
+          <span class="tech-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13 2 4 14h7l-1 8 9-12h-7z"/>
+            </svg>
+          </span>
+          <span class="tech-label">High Performance</span>
+        </div>
+
+        <div class="tech-card" data-reveal>
+          <span class="tech-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2 4 5v6c0 5 3.4 8.6 8 11 4.6-2.4 8-6 8-11V5z"/>
+            </svg>
+          </span>
+          <span class="tech-label">Security First</span>
+        </div>
+
+        <div class="tech-card" data-reveal>
+          <span class="tech-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+            </svg>
+          </span>
+          <span class="tech-label">Modular Drivers</span>
+        </div>
+
+        <div class="tech-card" data-reveal>
+          <span class="tech-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="11" width="16" height="10" rx="2"/>
+              <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+            </svg>
+          </span>
+          <span class="tech-label">Closed Source</span>
+        </div>
+
+        <div class="tech-card" data-reveal>
+          <span class="tech-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 17 10 10l4 4 7-7"/>
+              <path d="M15 6h6v6"/>
+            </svg>
+          </span>
+          <span class="tech-label">Commercial Long-Term Vision</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ROADMAP
+  ============================================================ -->
+  <section class="roadmap" id="roadmap">
+    <div class="container">
+      <div class="section-header" data-reveal>
+        <p class="eyebrow">Roadmap</p>
+        <h2 class="section-title">The path to Stable.</h2>
+        <p>Three phases carry Svillia OS from first boot to a complete, developer-ready platform.</p>
+      </div>
+
+      <div class="roadmap-track">
+        <div class="roadmap-item" data-reveal>
+          <span class="roadmap-dot"></span>
+          <p class="roadmap-phase">Phase 01</p>
+          <h3 class="roadmap-title">Alpha</h3>
+          <ul class="roadmap-list">
+            <li>Basic kernel</li>
+            <li>Basic bootloader</li>
+            <li>Filesystem</li>
+            <li>Desktop prototype</li>
+          </ul>
+        </div>
+
+        <div class="roadmap-item" data-reveal>
+          <span class="roadmap-dot"></span>
+          <p class="roadmap-phase">Phase 02</p>
+          <h3 class="roadmap-title">Beta</h3>
+          <ul class="roadmap-list">
+            <li>GUI improvements</li>
+            <li>Drivers</li>
+            <li>Applications</li>
+            <li>Networking</li>
+          </ul>
+        </div>
+
+        <div class="roadmap-item" data-reveal>
+          <span class="roadmap-dot"></span>
+          <p class="roadmap-phase">Phase 03</p>
+          <h3 class="roadmap-title">Stable</h3>
+          <ul class="roadmap-list">
+            <li>Developer SDK</li>
+            <li>Package manager</li>
+            <li>Security improvements</li>
+            <li>Commercial ecosystem</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ABOUT
+  ============================================================ -->
+  <section class="about" id="about">
+    <div class="container about-grid">
+      <div class="about-head" data-reveal>
+        <p class="eyebrow">About</p>
+        <h2>About Svillia OS</h2>
+      </div>
+      <div class="about-copy" data-reveal style="--reveal-delay:.05s">
+        <p>Svillia OS is a modern, high-performance desktop operating system built entirely from scratch.</p>
+        <p>The project is designed around security, stability, performance and long-term scalability.</p>
+        <p>Every major component is developed independently to create a fully self-contained ecosystem rather than relying on existing operating system technologies.</p>
+        <p>Current release <strong>"A New Beginning"</strong> establishes the project's foundation while future versions will expand hardware support, graphics, networking, developer tools and overall user experience.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#home" class="brand">
+          <svg class="logo-icon" aria-hidden="true"><use href="#logo-mark-dark"></use></svg>
+          <span>Svillia OS</span>
+        </a>
+        <p>A closed-source desktop operating system, built from scratch. A New Beginning.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Developer</h4>
+        <p>Emir Değişici</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>GitHub</h4>
+        <a href="https://github.com/svilia" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0.5C5.65 0.5 0.5 5.72 0.5 12.16c0 5.15 3.29 9.51 7.86 11.05 0.57 0.11 0.78-0.25 0.78-0.56 0-0.28-0.01-1.02-0.02-2-3.2 0.7-3.87-1.57-3.87-1.57-0.52-1.34-1.28-1.7-1.28-1.7-1.05-0.72 0.08-0.71 0.08-0.71 1.16 0.08 1.77 1.2 1.77 1.2 1.03 1.79 2.7 1.27 3.36 0.97 0.1-0.76 0.4-1.27 0.73-1.56-2.56-0.29-5.25-1.29-5.25-5.72 0-1.26 0.44-2.29 1.17-3.1-0.12-0.29-0.51-1.46 0.11-3.04 0 0 0.96-0.31 3.13 1.18 0.91-0.25 1.88-0.38 2.85-0.39 0.97 0 1.94 0.13 2.85 0.39 2.17-1.49 3.12-1.18 3.12-1.18 0.62 1.58 0.23 2.75 0.11 3.04 0.73 0.81 1.17 1.84 1.17 3.1 0 4.44-2.69 5.42-5.26 5.71 0.41 0.36 0.78 1.08 0.78 2.17 0 1.57-0.01 2.83-0.01 3.21 0 0.31 0.21 0.68 0.79 0.56C20.71 21.66 24 17.31 24 12.16 24 5.72 18.85 0.5 12.5 0.5H12z"/></svg>
+          github.com/svilia
+        </a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Email</h4>
+        <a href="mailto:sviliadestek@gmail.com">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          sviliadestek@gmail.com
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span class="footer-bottom-brand">
+        <svg class="logo-icon" aria-hidden="true"><use href="#logo-mark-dark"></use></svg>
+        © 2026 Svillia OS. All rights reserved.
+      </span>
+      <span>A New Beginning</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Navbar scrolled state ---------- */
+  var nav = document.getElementById('siteNav');
+  var sentinel = document.getElementById('home');
+  if (nav && sentinel){
+    var navObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        nav.classList.toggle('is-scrolled', !entry.isIntersecting || entry.intersectionRatio < 1);
+      });
+    }, { threshold: [1], rootMargin: "-1px 0px 0px 0px" });
+    navObserver.observe(sentinel);
+  }
+  // Fallback / more reliable scroll-based check
+  var onScroll = function(){
+    if (window.scrollY > 8){ nav.classList.add('is-scrolled'); }
+    else { nav.classList.remove('is-scrolled'); }
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* ---------- Mobile menu ---------- */
+  var toggle = document.getElementById('navToggle');
+  var panel = document.getElementById('mobilePanel');
+  var toggleIcon = document.getElementById('navToggleIcon');
+
+  function closeMenu(){
+    panel.classList.remove('is-open');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggleIcon.innerHTML = '<path d="M3 6h18M3 12h18M3 18h18"/>';
+    document.body.style.overflow = '';
+  }
+  function openMenu(){
+    panel.classList.add('is-open');
+    toggle.setAttribute('aria-expanded', 'true');
+    toggleIcon.innerHTML = '<path d="M6 6l12 12M18 6L6 18"/>';
+    document.body.style.overflow = 'hidden';
+  }
+  toggle.addEventListener('click', function(){
+    var isOpen = panel.classList.contains('is-open');
+    isOpen ? closeMenu() : openMenu();
+  });
+  panel.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click', closeMenu);
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') closeMenu();
+  });
+
+  /* ---------- Scroll reveal ---------- */
+  var revealEls = document.querySelectorAll('[data-reveal]');
+  if ('IntersectionObserver' in window){
+    var revealObserver = new IntersectionObserver(function(entries, obs){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: "0px 0px -60px 0px" });
+    revealEls.forEach(function(el){ revealObserver.observe(el); });
+    // Failsafe: guarantee visibility even if the observer never fires
+    // (older engines, unusual layouts, etc.)
+    setTimeout(function(){
+      revealEls.forEach(function(el){ el.classList.add('is-visible'); });
+    }, 2000);
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('is-visible'); });
+  }
+
+  /* ---------- Active nav link on scroll (scroll-spy) ---------- */
+  var sections = ['home','architecture','technology','roadmap','about']
+    .map(function(id){ return document.getElementById(id); })
+    .filter(Boolean);
+  var navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+
+  function setActive(id){
+    navLinks.forEach(function(link){
+      link.classList.toggle('is-active', link.getAttribute('href') === '#' + id);
+    });
+  }
+  if ('IntersectionObserver' in window && sections.length){
+    var spyObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){ setActive(entry.target.id); }
+      });
+    }, { rootMargin: "-45% 0px -50% 0px", threshold: 0 });
+    sections.forEach(function(s){ spyObserver.observe(s); });
+  }
+
+})();
+</script>
+
+</body>
+</html>
